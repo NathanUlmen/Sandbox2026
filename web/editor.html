@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown Publisher • Creator Campus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="editor.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html">CreatorCampus</a>
+    <nav class="nav-links">
+      <a href="index.html#courses">Courses</a>
+      <a href="index.html#memberships">Memberships</a>
+      <a href="index.html#community">Community</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="video.html">Course Video</a>
+      <a href="editor.html">Markdown Publisher</a>
+    </nav>
+    <a class="btn btn-ghost" href="#">Sign in</a>
+  </header>
+
+  <main class="editor-page">
+    <section class="editor-header">
+      <p class="eyebrow">Markdown Studio</p>
+      <h1>Write your lesson, preview live, and publish when ready.</h1>
+      <p class="lead">Preview renders locally in the browser. Publishing converts with Pandoc and stores the final HTML in SQLite.</p>
+    </section>
+
+    <section class="editor-grid">
+      <div class="editor-panel">
+        <div class="panel-header">
+          <h2>Markdown</h2>
+          <button id="publish-btn" class="btn btn-primary" type="button">Publish</button>
+        </div>
+        <textarea id="markdown-input" spellcheck="true">
+# Welcome to Creator Campus
+
+Start with a bold headline, then outline your course structure.
+
+## Module Outline
+- Mindset shift
+- Rapid prototyping
+- Launch checklist
+
+> "A small daily practice beats a giant yearly push."
+
+**Next step:** Invite learners to share their goals in the community.
+        </textarea>
+        <div class="status" id="status"></div>
+      </div>
+
+      <div class="preview-panel">
+        <div class="panel-header">
+          <h2>Preview</h2>
+          <span class="status-chip">Client-side render</span>
+        </div>
+        <article id="preview" class="preview-surface"></article>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    (function () {
+      const input = document.getElementById('markdown-input');
+      const preview = document.getElementById('preview');
+      const publishBtn = document.getElementById('publish-btn');
+      const status = document.getElementById('status');
+
+      if (!input || !preview || !publishBtn || !status || !window.marked) return;
+
+      const debounceMs = 400;
+      let debounceId = null;
+
+      function renderPreview() {
+        preview.innerHTML = window.marked.parse(input.value);
+      }
+
+      function scheduleRender() {
+        window.clearTimeout(debounceId);
+        debounceId = window.setTimeout(renderPreview, debounceMs);
+      }
+
+      input.addEventListener('input', scheduleRender);
+      renderPreview();
+
+      publishBtn.addEventListener('click', async function () {
+        status.textContent = 'Publishing...';
+        status.className = 'status';
+
+        try {
+          const response = await fetch('/api/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ markdown: input.value })
+          });
+
+          if (!response.ok) {
+            throw new Error('Publish failed');
+          }
+
+          const data = await response.json();
+          status.textContent = 'Published. Post ID: ' + data.id;
+          status.className = 'status success';
+        } catch (err) {
+          status.textContent = 'Publish failed. Check server logs.';
+          status.className = 'status error';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
