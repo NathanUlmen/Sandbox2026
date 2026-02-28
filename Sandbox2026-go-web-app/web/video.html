@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Video • Creator Campus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="video.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html">CreatorCampus</a>
+    <nav class="nav-links">
+      <a href="index.html#courses">Courses</a>
+      <a href="index.html#memberships">Memberships</a>
+      <a href="index.html#community">Community</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="video.html">Course Video</a>
+    </nav>
+    <a class="btn btn-ghost" href="#">Sign in</a>
+  </header>
+
+  <main class="video-page-container">
+    <section class="video-section">
+      <p class="eyebrow">Featured Lesson</p>
+      <h1>Introduction to the Course</h1>
+
+      <div class="video-wrapper">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          title="Course Video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <p class="video-description">
+        In this video, we cover the foundational concepts of the course. Share questions and thoughts in the discussion below!
+      </p>
+    </section>
+
+    <section class="comments-section">
+      <h2>Discussion & Comments</h2>
+
+      <form id="comment-form" class="comment-form" autocomplete="off">
+        <label for="username">Name:</label>
+        <input type="text" id="username" name="username" placeholder="Enter your name" required />
+
+        <label for="comment-text">Comment:</label>
+        <textarea id="comment-text" name="comment-text" rows="4" placeholder="Share your thoughts..." required></textarea>
+
+        <button type="submit">Post Comment</button>
+      </form>
+
+      <div class="comments-list" id="comments-list">
+        <div class="comment">
+          <strong>Jane Doe</strong>
+          <p>This was a very helpful introduction! Looking forward to the next lesson.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const form = document.getElementById('comment-form');
+      const list = document.getElementById('comments-list');
+      const nameEl = document.getElementById('username');
+      const textEl = document.getElementById('comment-text');
+
+      if (!form || !list || !nameEl || !textEl) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const username = nameEl.value.trim();
+        const commentText = textEl.value.trim();
+        if (!username || !commentText) return;
+
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment';
+        commentDiv.innerHTML = '<strong>' + username.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</strong><p>' + commentText.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</p>';
+
+        list.prepend(commentDiv);
+
+        form.reset();
+        nameEl.focus();
+      });
+    })();
+  </script>
+</body>
+</html>
