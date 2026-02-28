@@ -23,6 +23,13 @@ h1 {
   border-radius: 10px;
 }
 
+.author {
+  text-transform: none;
+  text-decoration: none;
+  font-size: larger;
+  padding: 4%;
+}
+
 .video-page-header {
   color: var(--text2);
   position: relative;
@@ -61,14 +68,22 @@ div[class^=video-wrapper] {
 .article {
   position: relative;
   background-color: rgba(36, 190, 113, 0.1);
+  border-radius: 10px;
   padding: 5vmin;
   word-break: break-word;
   overflow-wrap: break-word;
 }
 
 .article p {
+  padding-top: 3vmin;
   word-break: break-word;
   overflow-wrap: break-word;
+}
+
+.article ul,
+.arctile ol {
+  padding: 3vmin;
+  font-weight: lighter;
 }
 
 /* --- Comments Section Styles --- */
