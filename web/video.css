@@ -1,19 +1,42 @@
+:root {
+  --text1: rgb(237, 237, 196);
+  --text2: rgb(180, 194, 137);
+  --midgreen: rgba(36, 190, 113, 0.3);
+}
 /* --- Video Page Styles --- */
 .video-page-container {
-  max-width: 960px;
+  position: relative;
+  /* max-width: 960px; */
+  background-image: linear-gradient(145deg, rgb(25, 29, 27), rgb(35, 40, 38));
+  border: 6px var(--midgreen) solid;
+  border-style: double;
+  border-radius: 10px;
+  box-shadow: 0 0 100px var(--midgreen);
   margin: 0 auto;
-  padding: 24px;
+  padding: 5%;
 }
 
-.video-section {
-  margin-bottom: 40px;
+h1 {
+  color: var(--text1);
+  background-color: rgba(36, 190, 113, 0.3);
+  padding: 1% 2%;
+  border-radius: 10px;
+}
+
+.video-page-header {
+  color: var(--text2);
+  position: relative;
+  background-color: rgba(36, 190, 113, 0.3);
+  border-radius: 10px;
+  padding: 0.3% 8% 0.5% 8%;
+  color: var(--text2);
 }
 
 /* Responsive Video Wrapper (16:9) */
-.video-wrapper {
+div[class^=video-wrapper] {
   position: relative;
+  aspect-ratio: 16 / 9;
   padding-bottom: 56.25%;
-  height: 0;
   overflow: hidden;
   margin: 12px 0 16px;
   background-color: #000;
@@ -33,6 +56,19 @@
   font-size: 1.075rem;
   color: #444;
   line-height: 1.65;
+}
+
+.article {
+  position: relative;
+  background-color: rgba(36, 190, 113, 0.1);
+  padding: 5vmin;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.article p {
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 /* --- Comments Section Styles --- */
