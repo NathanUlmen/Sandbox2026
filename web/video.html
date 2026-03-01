@@ -16,12 +16,13 @@
   <header class="site-header">
     <a class="brand" href="index.html">CreatorCampus</a>
     <nav class="nav-links">
-      <a href="index.html#courses">Courses</a>
-      <a href="index.html#memberships">Memberships</a>
       <a href="index.html#community">Community</a>
-      <a href="index.html#pricing">Pricing</a>
-      <a href="video.html">Course Video</a>
+      <a href="index.html#courses">Courses</a>
       <a href="editor.html">Markdown Publisher</a>
+      <a href="index.html#memberships">Memberships</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="upload.html">Upload Studio</a>
+      <a href="video.html">Course Video</a>
     </nav>
     <a class="btn btn-ghost" href="#">Sign in</a>
   </header>
@@ -33,9 +34,7 @@
 
       <div class="video-wrapper">
         <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          src="https://sht2.ben256.com/VXGS6BraAAYK3H_HqQujD7qY4Sy0du1wenb0_ygNVpo"
           title="Course Video"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -45,7 +44,7 @@
       </div>
 
       <p class="video-description">
-        In this video, we cover the foundational concepts of the course. Share questions and thoughts in the discussion below!
+        In this video, we cover the foundational concepts of the course. Share questions and thoughts in the discussion below.
       </p>
     </section>
 
@@ -65,7 +64,7 @@
       <div class="comments-list" id="comments-list">
         <div class="comment">
           <strong>Jane Doe</strong>
-          <p>This was a very helpful introduction! Looking forward to the next lesson.</p>
+          <p>This was a very helpful introduction. Looking forward to the next lesson.</p>
         </div>
       </div>
     </section>
@@ -87,12 +86,14 @@
         const commentText = textEl.value.trim();
         if (!username || !commentText) return;
 
+        const safeName = username.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const safeText = commentText.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
         const commentDiv = document.createElement('div');
         commentDiv.className = 'comment';
-        commentDiv.innerHTML = '<strong>' + username.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</strong><p>' + commentText.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</p>';
+        commentDiv.innerHTML = '<strong>' + safeName + '</strong><p>' + safeText + '</p>';
 
         list.prepend(commentDiv);
-
         form.reset();
         nameEl.focus();
       });
