@@ -1,0 +1,242 @@
+.upload-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.2rem 3rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(7px);
+  border-radius: var(--radius-xl);
+}
+
+.upload-hero {
+  padding: 1.7rem;
+}
+
+.upload-hero h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(1.7rem, 4vw, 2.7rem);
+  line-height: 1.05;
+}
+
+.upload-hero p {
+  margin-top: 0.8rem;
+  color: var(--ink-700);
+  max-width: 60ch;
+}
+
+.upload-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1rem;
+}
+
+.settings-panel,
+.uploader-panel,
+.response-panel {
+  padding: 1.3rem;
+}
+
+.settings-panel h2,
+.uploader-panel h2,
+.response-panel h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.25rem;
+  margin-bottom: 0.9rem;
+}
+
+#settings-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+#settings-form label {
+  font-weight: 600;
+  font-size: 0.93rem;
+  color: var(--ink-700);
+}
+
+#settings-form input {
+  width: 100%;
+  padding: 0.68rem 0.76rem;
+  border-radius: 10px;
+  border: 1px solid #e5d7c8;
+  background: #fff;
+  font: inherit;
+}
+
+#settings-form input:focus {
+  outline: none;
+  border-color: rgba(255, 77, 61, 0.45);
+  box-shadow: 0 0 0 3px rgba(255, 77, 61, 0.15);
+}
+
+.custom-header-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.inline-check {
+  margin-top: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.92rem;
+}
+
+.inline-check input {
+  width: auto;
+}
+
+.dropzone {
+  position: relative;
+  border: 2px dashed rgba(255, 77, 61, 0.4);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 246, 237, 0.95));
+  border-radius: 18px;
+  padding: 2rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.dropzone:hover,
+.dropzone.is-dragging {
+  transform: translateY(-2px);
+  border-color: var(--accent-1);
+  box-shadow: 0 14px 28px rgba(255, 77, 61, 0.18);
+}
+
+.dropzone:focus-visible {
+  outline: 3px solid rgba(33, 183, 168, 0.45);
+  outline-offset: 3px;
+}
+
+.drop-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.1rem;
+}
+
+.drop-sub {
+  margin-top: 0.35rem;
+  color: var(--ink-500);
+  font-size: 0.92rem;
+}
+
+#fileInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.actions {
+  margin-top: 0.95rem;
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.actions .btn[disabled] {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.status {
+  margin-top: 0.7rem;
+  color: var(--ink-700);
+  font-weight: 500;
+}
+
+.file-list {
+  list-style: none;
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.file-item {
+  border: 1px solid #f0e3d4;
+  border-radius: 12px;
+  padding: 0.62rem;
+  background: #fff;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.file-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.file-meta strong {
+  font-size: 0.92rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-meta small {
+  color: var(--ink-500);
+  white-space: nowrap;
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #f6ede4;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  transition: width 120ms linear;
+}
+
+.progress-text {
+  font-size: 0.83rem;
+  color: var(--ink-500);
+}
+
+.response-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+#responseOutput {
+  margin-top: 0.8rem;
+  background: #17111f;
+  color: #edf2ff;
+  border-radius: 14px;
+  padding: 0.9rem;
+  min-height: 170px;
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 0.87rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 980px) {
+  .upload-grid,
+  .custom-header-row {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-hero,
+  .settings-panel,
+  .uploader-panel,
+  .response-panel {
+    padding: 1.1rem;
+  }
+}

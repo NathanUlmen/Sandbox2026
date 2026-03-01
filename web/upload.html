@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Studio • Creator Campus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" />
+  <link rel="stylesheet" href="upload.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html">CreatorCampus</a>
+    <nav class="nav-links">
+      <a href="index.html#community">Community</a>
+      <a href="index.html#courses">Courses</a>
+      <a href="editor.html">Markdown Publisher</a>
+      <a href="index.html#memberships">Memberships</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="upload.html">Upload Studio</a>
+      <a href="video.html">Course Video</a>
+    </nav>
+    <a class="btn btn-ghost" href="#">Sign in</a>
+  </header>
+
+  <main class="upload-page">
+    <section class="upload-hero glass-card">
+      <p class="eyebrow">Dropzone + Your API</p>
+      <h1>Upload files to <code>sht2.ben256.com</code> with a production-ready uploader.</h1>
+      <p>Configure endpoint and headers, then queue and upload raw file bytes with Dropzone progress + retry behavior.</p>
+    </section>
+
+    <section class="upload-grid">
+      <article class="glass-card settings-panel">
+        <h2>Request settings</h2>
+        <form id="settings-form" autocomplete="off">
+          <label for="endpoint">Upload endpoint</label>
+          <input id="endpoint" name="endpoint" type="url" value="https://sht2.ben256.com/" required />
+
+          <label for="authToken">Bearer token (optional)</label>
+          <input id="authToken" name="authToken" type="text" placeholder="Paste token" />
+
+          <div class="custom-header-row">
+            <div>
+              <label for="customHeaderName">Custom header (optional)</label>
+              <input id="customHeaderName" name="customHeaderName" type="text" placeholder="X-Api-Key" />
+            </div>
+            <div>
+              <label for="customHeaderValue">Header value</label>
+              <input id="customHeaderValue" name="customHeaderValue" type="text" placeholder="..." />
+            </div>
+          </div>
+
+          <label class="inline-check" for="withCredentials">
+            <input id="withCredentials" name="withCredentials" type="checkbox" />
+            Send cookies (<code>withCredentials</code>)
+          </label>
+        </form>
+      </article>
+
+      <article class="glass-card uploader-panel">
+        <h2>Dropzone uploader</h2>
+        <form action="https://sht2.ben256.com/" class="dropzone" id="dropzoneForm">
+          <div class="dz-message">
+            <strong>Drop files here</strong>
+            <span>or click to browse</span>
+          </div>
+        </form>
+
+        <div class="actions">
+          <button id="uploadBtn" class="btn btn-primary" type="button">Upload queued files</button>
+          <button id="clearBtn" class="btn btn-outline" type="button">Clear queue</button>
+        </div>
+
+        <p id="status" class="status" aria-live="polite">No files queued.</p>
+      </article>
+    </section>
+
+    <section class="glass-card response-panel">
+      <div class="response-head">
+        <h2>API responses</h2>
+        <button id="copyResponse" class="btn btn-ghost" type="button">Copy JSON</button>
+      </div>
+      <pre id="responseOutput">Upload results will appear here.</pre>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+  <script>
+    (function () {
+      const settingsForm = document.getElementById('settings-form');
+      const endpointEl = document.getElementById('endpoint');
+      const authTokenEl = document.getElementById('authToken');
+      const customHeaderNameEl = document.getElementById('customHeaderName');
+      const customHeaderValueEl = document.getElementById('customHeaderValue');
+      const withCredentialsEl = document.getElementById('withCredentials');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const statusEl = document.getElementById('status');
+      const responseOutput = document.getElementById('responseOutput');
+      const copyResponseBtn = document.getElementById('copyResponse');
+
+      if (!window.Dropzone || !settingsForm || !endpointEl || !authTokenEl || !customHeaderNameEl || !customHeaderValueEl || !withCredentialsEl || !uploadBtn || !clearBtn || !statusEl || !responseOutput || !copyResponseBtn) {
+        return;
+      }
+
+      const STORAGE_KEY = 'creator-campus-upload-settings-v2';
+      const responses = [];
+      let startedUploads = 0;
+      let finishedUploads = 0;
+
+      function normalizeEndpoint(value) {
+        const raw = (value || '').trim();
+        if (!raw) return '';
+        return raw.replace(/\/upload\/?$/i, '/');
+      }
+
+      function isSht2Endpoint(endpoint) {
+        return /^https:\/\/sht2\.ben256\.com\/?$/i.test(endpoint);
+      }
+
+      function saveSettings() {
+        const payload = {
+          endpoint: normalizeEndpoint(endpointEl.value),
+          authToken: authTokenEl.value,
+          customHeaderName: customHeaderNameEl.value,
+          customHeaderValue: customHeaderValueEl.value,
+          withCredentials: withCredentialsEl.checked
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      }
+
+      function loadSettings() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (parsed.endpoint) endpointEl.value = normalizeEndpoint(parsed.endpoint);
+          if (parsed.authToken) authTokenEl.value = parsed.authToken;
+          if (parsed.customHeaderName) customHeaderNameEl.value = parsed.customHeaderName;
+          if (parsed.customHeaderValue) customHeaderValueEl.value = parsed.customHeaderValue;
+          withCredentialsEl.checked = Boolean(parsed.withCredentials);
+          if (isSht2Endpoint(endpointEl.value)) {
+            withCredentialsEl.checked = false;
+            customHeaderNameEl.value = '';
+            customHeaderValueEl.value = '';
+          }
+        } catch (err) {
+          console.warn('Could not restore settings.', err);
+        }
+      }
+
+      function safeJson(raw) {
+        if (!raw) return null;
+        try {
+          return JSON.parse(raw);
+        } catch (err) {
+          return raw;
+        }
+      }
+
+      function renderResponse() {
+        responseOutput.textContent = responses.length
+          ? JSON.stringify(responses, null, 2)
+          : 'Upload results will appear here.';
+      }
+
+      function queuedCount(dz) {
+        return dz.getQueuedFiles().length;
+      }
+
+      function uploadingCount(dz) {
+        return dz.getUploadingFiles().length;
+      }
+
+      function completedCount(dz) {
+        return dz.getAcceptedFiles().filter(function (f) {
+          return f.status === Dropzone.SUCCESS;
+        }).length;
+      }
+
+      function updateStatus(dz) {
+        const queued = queuedCount(dz);
+        const uploading = uploadingCount(dz);
+        const completed = completedCount(dz);
+
+        if (uploading > 0) {
+          statusEl.textContent = 'Uploading ' + uploading + ' now • ' + completed + ' complete';
+          return;
+        }
+
+        if (queued > 0) {
+          statusEl.textContent = queued + ' file(s) queued.';
+          return;
+        }
+
+        if (startedUploads > 0) {
+          statusEl.textContent = 'Finished: ' + finishedUploads + ' file(s) processed.';
+          return;
+        }
+
+        statusEl.textContent = 'No files queued.';
+      }
+
+      Dropzone.autoDiscover = false;
+
+      const dz = new Dropzone('#dropzoneForm', {
+        url: function () {
+          return normalizeEndpoint(endpointEl.value) || 'https://sht2.ben256.com/';
+        },
+        method: 'post',
+        binaryBody: true,
+        uploadMultiple: false,
+        parallelUploads: 3,
+        autoProcessQueue: false,
+        addRemoveLinks: true,
+        withCredentials: withCredentialsEl.checked,
+        maxFilesize: 1024,
+        timeout: 0
+      });
+
+      dz.on('addedfile', function () {
+        updateStatus(dz);
+      });
+
+      dz.on('removedfile', function () {
+        updateStatus(dz);
+      });
+
+      dz.on('processing', function () {
+        updateStatus(dz);
+      });
+
+      dz.on('sending', function (file, xhr) {
+        const endpoint = normalizeEndpoint(endpointEl.value) || 'https://sht2.ben256.com/';
+        const authToken = authTokenEl.value.trim();
+        const customHeaderName = customHeaderNameEl.value.trim();
+        const customHeaderValue = customHeaderValueEl.value;
+        const disableCookiesForSht2 = isSht2Endpoint(endpoint);
+        const disableCustomHeadersForSht2 = isSht2Endpoint(endpoint);
+
+        dz.options.withCredentials = disableCookiesForSht2 ? false : withCredentialsEl.checked;
+
+        if (authToken) {
+          xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+        }
+
+        if (!disableCustomHeadersForSht2 && customHeaderName && customHeaderValue) {
+          xhr.setRequestHeader(customHeaderName, customHeaderValue);
+        }
+
+        if (disableCookiesForSht2 && withCredentialsEl.checked) {
+          statusEl.textContent = 'Disabled cookies for sht2.ben256.com (server does not use credentialed CORS).';
+        }
+        if (disableCustomHeadersForSht2 && customHeaderName) {
+          statusEl.textContent = 'Ignored custom header for sht2.ben256.com (to avoid CORS preflight failure).';
+        }
+      });
+
+      dz.on('success', function (file, response, event) {
+        responses.push({
+          ok: true,
+          fileName: file.name,
+          status: event && event.status ? event.status : 200,
+          response: response
+        });
+        finishedUploads += 1;
+        updateStatus(dz);
+        renderResponse();
+      });
+
+      dz.on('error', function (file, errorMessage, xhr) {
+        responses.push({
+          ok: false,
+          fileName: file.name,
+          status: xhr ? xhr.status : 0,
+          response: xhr && xhr.responseText ? safeJson(xhr.responseText) : errorMessage
+        });
+        finishedUploads += 1;
+        updateStatus(dz);
+        renderResponse();
+      });
+
+      dz.on('queuecomplete', function () {
+        updateStatus(dz);
+        uploadBtn.disabled = false;
+      });
+
+      settingsForm.addEventListener('change', function () {
+        saveSettings();
+      });
+
+      uploadBtn.addEventListener('click', function () {
+        if (dz.getAcceptedFiles().length === 0) {
+          statusEl.textContent = 'Add files first.';
+          return;
+        }
+
+        const endpoint = endpointEl.value.trim();
+        if (!endpoint) {
+          statusEl.textContent = 'Upload endpoint is required.';
+          endpointEl.focus();
+          return;
+        }
+        endpointEl.value = normalizeEndpoint(endpoint);
+        if (isSht2Endpoint(endpointEl.value) && withCredentialsEl.checked) {
+          withCredentialsEl.checked = false;
+        }
+        if (isSht2Endpoint(endpointEl.value) && customHeaderNameEl.value.trim()) {
+          customHeaderNameEl.value = '';
+          customHeaderValueEl.value = '';
+        }
+
+        responses.length = 0;
+        startedUploads = dz.getAcceptedFiles().length;
+        finishedUploads = 0;
+        renderResponse();
+        saveSettings();
+        uploadBtn.disabled = true;
+        dz.processQueue();
+        updateStatus(dz);
+      });
+
+      clearBtn.addEventListener('click', function () {
+        dz.removeAllFiles(true);
+        responses.length = 0;
+        startedUploads = 0;
+        finishedUploads = 0;
+        renderResponse();
+        updateStatus(dz);
+      });
+
+      copyResponseBtn.addEventListener('click', async function () {
+        try {
+          await navigator.clipboard.writeText(responseOutput.textContent || '');
+          copyResponseBtn.textContent = 'Copied';
+          setTimeout(function () {
+            copyResponseBtn.textContent = 'Copy JSON';
+          }, 1200);
+        } catch (err) {
+          copyResponseBtn.textContent = 'Copy failed';
+          setTimeout(function () {
+            copyResponseBtn.textContent = 'Copy JSON';
+          }, 1200);
+        }
+      });
+
+      loadSettings();
+      renderResponse();
+      updateStatus(dz);
+    })();
+  </script>
+</body>
+</html>

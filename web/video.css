@@ -6,7 +6,6 @@
 /* --- Video Page Styles --- */
 .video-page-container {
   position: relative;
-  /* max-width: 960px; */
   background-image: linear-gradient(145deg, rgb(25, 29, 27), rgb(35, 40, 38));
   border: 6px var(--midgreen) solid;
   border-style: double;
@@ -45,11 +44,11 @@ h1 {
   background-color: rgba(36, 190, 113, 0.3);
   border-radius: 10px;
   padding: 0.3% 8% 0.5% 8%;
-  color: var(--text2);
 }
 
 /* Responsive Video Wrapper (16:9) */
-div[class^=video-wrapper] {
+div[class^="video-wrapper"],
+.video-wrapper {
   position: relative;
   width: 100%;
   max-width: 560px;
@@ -61,6 +60,7 @@ div[class^=video-wrapper] {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 1);
 }
 
+div[class^="video-wrapper"] iframe,
 .video-wrapper iframe {
   position: absolute;
   inset: 0;
@@ -91,7 +91,7 @@ div[class^=video-wrapper] {
 }
 
 .article ul,
-.arctile ol {
+.article ol {
   padding: 3vmin;
   font-weight: lighter;
   line-height: 1.5em;
