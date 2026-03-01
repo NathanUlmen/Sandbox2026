@@ -1,6 +1,8 @@
 :root {
+  /* background-image:
+    linear-gradient(rgb(8, 50, 41), rgb(11, 84, 62)); */
   background-image:
-    linear-gradient(rgb(8, 50, 41), rgb(11, 84, 62));
+    linear-gradient(rgb(9, 43, 36), rgb(6, 55, 40));
   --text1: rgb(237, 237, 196);
   --text2: rgb(180, 194, 137);
   --midgreen: rgba(36, 190, 113, 0.3);

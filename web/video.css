@@ -24,10 +24,19 @@ h1 {
 }
 
 .author {
+  display:inline-block;
   text-transform: none;
   text-decoration: none;
   font-size: larger;
-  padding: 4%;
+  transition: text-shadow 0.2s, background-color 0.5s;
+  border: 1px solid var(--text1);
+  border-radius: 10px;
+  padding: 1% 1%;
+}
+
+.author:hover {
+  text-shadow: 0 0 20px var(--text2);
+  background-color: rgba(36, 190, 113, 0.3);
 }
 
 .video-page-header {
@@ -42,13 +51,14 @@ h1 {
 /* Responsive Video Wrapper (16:9) */
 div[class^=video-wrapper] {
   position: relative;
+  width: 100%;
+  max-width: 560px;
   aspect-ratio: 16 / 9;
-  padding-bottom: 56.25%;
   overflow: hidden;
   margin: 12px 0 16px;
   background-color: #000;
   border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 1);
 }
 
 .video-wrapper iframe {
@@ -84,7 +94,19 @@ div[class^=video-wrapper] {
 .arctile ol {
   padding: 3vmin;
   font-weight: lighter;
+  line-height: 1.5em;
 }
+
+.article h2 {
+  color: var(--text1);
+  border-bottom: 1px solid var(--text2);
+}
+
+.soft {
+  font-size: smaller;
+  color: rgb(180, 194, 137, 0.5);
+}
+
 
 /* --- Comments Section Styles --- */
 .comments-section {
@@ -101,31 +123,31 @@ div[class^=video-wrapper] {
 
 .comment-form label {
   font-weight: 600;
-  color: #2a2a2a;
+  color: #a36a6a;
 }
 
 .comment-form input,
 .comment-form textarea {
   padding: 12px 14px;
-  border: 1px solid #d2d6dc;
+  border: 1px solid var(--midgreen);
   border-radius: 8px;
   font: inherit;
   resize: vertical;
-  background: #fff;
+  background: #372a28;
 }
 
 .comment-form input:focus,
 .comment-form textarea:focus {
   outline: none;
-  border-color: #5b8def;
+  border-color: rgb(36, 190, 113);
   box-shadow: 0 0 0 3px rgba(91, 141, 239, 0.2);
 }
 
 .comment-form button {
   align-self: flex-start;
   padding: 10px 18px;
-  background-color: #1f64ff;
-  color: #fff;
+  background-color: var(--midgreen);
+  color: var(--text2);
   font-weight: 600;
   border: none;
   border-radius: 8px;
@@ -134,7 +156,7 @@ div[class^=video-wrapper] {
 }
 
 .comment-form button:hover {
-  background-color: #1650cc;
+  background-color: rgb(36, 190, 113);
 }
 
 .comments-list {
@@ -144,20 +166,20 @@ div[class^=video-wrapper] {
 }
 
 .comment {
-  background: #f6f8fb;
+  background: #372a28;
   padding: 14px 16px;
   border-radius: 10px;
-  border-left: 4px solid #1f64ff;
+  border-left: 4px solid rgba(36, 190, 113, 0.3);
 }
 
 .comment strong {
   display: block;
   margin-bottom: 6px;
-  color: #1b1b1b;
+  color: var(--text1);
 }
 
 .comment p {
   margin: 0;
-  color: #4a4a4a;
+  color: var(--text2);
   line-height: 1.55;
 }
