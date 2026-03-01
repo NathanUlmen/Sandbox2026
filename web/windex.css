@@ -1,11 +1,16 @@
 :root {
-  /* background-image:
-    linear-gradient(rgb(8, 50, 41), rgb(11, 84, 62)); */
-  background-image:
-    linear-gradient(rgb(9, 43, 36), rgb(6, 55, 40));
-  --text1: rgb(237, 237, 196);
-  --text2: rgb(180, 194, 137);
-  --midgreen: rgba(36, 190, 113, 0.3);
+  --bg-0: #fff7ee;
+  --bg-1: #ffe3cc;
+  --ink-900: #181127;
+  --ink-700: #3d3452;
+  --ink-500: #72677f;
+  --surface: #ffffff;
+  --accent-1: #ff4d3d;
+  --accent-2: #fcb045;
+  --accent-3: #21b7a8;
+  --shadow-soft: 0 18px 40px rgba(45, 24, 81, 0.12);
+  --radius-xl: 28px;
+  --radius-md: 16px;
 }
 
 * {
@@ -16,26 +21,20 @@
 
 body {
   min-height: 100vh;
-  font-family: "Barlow", "Avenir Next", "Segoe UI", sans-serif;
-  color: var(--text2);
-  /* background: linear-gradient(130deg, var(--bg-0), #fff3e5 35%, #f6f9ff 100%); */
+  font-family: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--ink-900);
+  background: linear-gradient(130deg, var(--bg-0), #fff3e5 35%, #f6f9ff 100%);
   overflow-x: hidden;
-}
-
-h1 {
-  color: var(--text1);
-  background-color: rgba(36, 190, 113, 0.3);
-  padding: 1% 0%;
 }
 
 .page-bg {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  /* background-image: linear-gradient(0deg, rgb(19, 55, 43, 0.3), rgb(17, 62, 45));
-  background-origin: padding-box;
-  background-clip: content-box;
-  padding: 5vmin 5vmin; */
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 77, 61, 0.22), transparent 34%),
+    radial-gradient(circle at 80% 12%, rgba(252, 176, 69, 0.28), transparent 32%),
+    radial-gradient(circle at 74% 76%, rgba(33, 183, 168, 0.2), transparent 30%);
   z-index: -1;
 }
 
@@ -53,7 +52,7 @@ h1 {
   font-family: "Space Grotesk", sans-serif;
   font-size: 1.35rem;
   font-weight: 700;
-  color: var(--text1);
+  color: var(--ink-900);
   text-decoration: none;
 }
 
@@ -63,7 +62,7 @@ h1 {
 }
 
 .nav-links a {
-  color: var(--text1);
+  color: var(--ink-700);
   text-decoration: none;
   font-weight: 500;
 }
@@ -97,12 +96,12 @@ main {
   padding: 2.2rem;
 }
 
-.eyebrow, a {
+.eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.77rem;
   font-weight: 700;
-  color: var(--text1);
+  color: var(--accent-1);
   margin-bottom: 0.8rem;
 }
 
@@ -114,7 +113,7 @@ main {
 
 .lead {
   margin-top: 1rem;
-  color: var(--text1);
+  color: var(--ink-700);
   font-size: 1.05rem;
   max-width: 54ch;
 }
@@ -142,18 +141,18 @@ main {
 
 .btn-primary {
   background: linear-gradient(110deg, var(--accent-1), var(--accent-2));
-  color: var(--text2);
+  color: #fff;
   box-shadow: 0 10px 20px rgba(255, 77, 61, 0.28);
 }
 
 .btn-outline {
-  color: var(--text1);
+  color: var(--ink-900);
   border: 2px solid rgba(24, 17, 39, 0.14);
   background: rgba(255, 255, 255, 0.75);
 }
 
 .btn-ghost {
-  color: var(--text1);
+  color: var(--ink-900);
   border: 1px solid rgba(24, 17, 39, 0.08);
   background: rgba(255, 255, 255, 0.7);
 }
@@ -178,7 +177,7 @@ main {
 }
 
 .hero-metrics p {
-  color: var(--text1);
+  color: var(--ink-500);
   font-size: 0.88rem;
 }
 
@@ -205,7 +204,7 @@ main {
 }
 
 .panel-sub {
-  color: var(--text2);
+  color: var(--ink-700);
 }
 
 .hero-panel ul {
@@ -218,7 +217,7 @@ main {
 .hero-panel li {
   padding-left: 1rem;
   position: relative;
-  color: var(--text2);
+  color: var(--ink-700);
 }
 
 .hero-panel li::before {
@@ -244,7 +243,7 @@ main {
 }
 
 .panel-price small {
-  color: var(--text3);
+  color: var(--ink-500);
 }
 
 .cards,
@@ -290,14 +289,14 @@ main {
 
 .card p {
   margin-top: 0.5rem;
-  color: var(--text1);
+  color: var(--ink-700);
 }
 
 .card footer {
   margin-top: 1rem;
   display: flex;
   justify-content: space-between;
-  color: var(--text2);
+  color: var(--ink-500);
   font-size: 0.88rem;
 }
 
@@ -312,7 +311,7 @@ main {
 
 .split p {
   margin-top: 0.8rem;
-  color: var(--text2);
+  color: var(--ink-700);
 }
 
 .mini-feed {
@@ -334,7 +333,7 @@ main {
 .mini-feed p {
   margin-top: 0.3rem;
   font-size: 0.9rem;
-  color: var(--text2);
+  color: var(--ink-700);
 }
 
 .pricing-grid {
@@ -357,7 +356,7 @@ main {
 
 .price span {
   font-size: 0.9rem;
-  color: var(--text3);
+  color: var(--ink-500);
 }
 
 .featured {

@@ -1,24 +1,66 @@
+:root {
+  --text1: rgb(237, 237, 196);
+  --text2: rgb(180, 194, 137);
+  --midgreen: rgba(36, 190, 113, 0.3);
+}
+/* --- Video Page Styles --- */
 .video-page-container {
-  max-width: 960px;
+  position: relative;
+  background-image: linear-gradient(145deg, rgb(25, 29, 27), rgb(35, 40, 38));
+  border: 6px var(--midgreen) solid;
+  border-style: double;
+  border-radius: 10px;
+  box-shadow: 0 0 100px var(--midgreen);
   margin: 0 auto;
-  padding: 24px;
+  padding: 5%;
 }
 
-.video-section {
-  margin-bottom: 40px;
+h1 {
+  color: var(--text1);
+  background-color: rgba(36, 190, 113, 0.3);
+  padding: 1% 2%;
+  border-radius: 10px;
 }
 
+.author {
+  display:inline-block;
+  text-transform: none;
+  text-decoration: none;
+  font-size: larger;
+  transition: text-shadow 0.2s, background-color 0.5s;
+  border: 1px solid var(--text1);
+  border-radius: 10px;
+  padding: 1% 1%;
+}
+
+.author:hover {
+  text-shadow: 0 0 20px var(--text2);
+  background-color: rgba(36, 190, 113, 0.3);
+}
+
+.video-page-header {
+  color: var(--text2);
+  position: relative;
+  background-color: rgba(36, 190, 113, 0.3);
+  border-radius: 10px;
+  padding: 0.3% 8% 0.5% 8%;
+}
+
+/* Responsive Video Wrapper (16:9) */
+div[class^="video-wrapper"],
 .video-wrapper {
   position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   margin: 12px 0 16px;
   background-color: #000;
   border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 1);
 }
 
+div[class^="video-wrapper"] iframe,
 .video-wrapper iframe {
   position: absolute;
   inset: 0;
@@ -33,6 +75,40 @@
   line-height: 1.65;
 }
 
+.article {
+  position: relative;
+  background-color: rgba(36, 190, 113, 0.1);
+  border-radius: 10px;
+  padding: 5vmin;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.article p {
+  padding-top: 3vmin;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.article ul,
+.article ol {
+  padding: 3vmin;
+  font-weight: lighter;
+  line-height: 1.5em;
+}
+
+.article h2 {
+  color: var(--text1);
+  border-bottom: 1px solid var(--text2);
+}
+
+.soft {
+  font-size: smaller;
+  color: rgb(180, 194, 137, 0.5);
+}
+
+
+/* --- Comments Section Styles --- */
 .comments-section {
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   padding-top: 28px;
@@ -47,31 +123,31 @@
 
 .comment-form label {
   font-weight: 600;
-  color: #2a2a2a;
+  color: #a36a6a;
 }
 
 .comment-form input,
 .comment-form textarea {
   padding: 12px 14px;
-  border: 1px solid #d2d6dc;
+  border: 1px solid var(--midgreen);
   border-radius: 8px;
   font: inherit;
   resize: vertical;
-  background: #fff;
+  background: #372a28;
 }
 
 .comment-form input:focus,
 .comment-form textarea:focus {
   outline: none;
-  border-color: #5b8def;
+  border-color: rgb(36, 190, 113);
   box-shadow: 0 0 0 3px rgba(91, 141, 239, 0.2);
 }
 
 .comment-form button {
   align-self: flex-start;
   padding: 10px 18px;
-  background-color: #1f64ff;
-  color: #fff;
+  background-color: var(--midgreen);
+  color: var(--text2);
   font-weight: 600;
   border: none;
   border-radius: 8px;
@@ -80,7 +156,7 @@
 }
 
 .comment-form button:hover {
-  background-color: #1650cc;
+  background-color: rgb(36, 190, 113);
 }
 
 .comments-list {
@@ -90,20 +166,20 @@
 }
 
 .comment {
-  background: #f6f8fb;
+  background: #372a28;
   padding: 14px 16px;
   border-radius: 10px;
-  border-left: 4px solid #1f64ff;
+  border-left: 4px solid rgba(36, 190, 113, 0.3);
 }
 
 .comment strong {
   display: block;
   margin-bottom: 6px;
-  color: #1b1b1b;
+  color: var(--text1);
 }
 
 .comment p {
   margin: 0;
-  color: #4a4a4a;
+  color: var(--text2);
   line-height: 1.55;
 }
