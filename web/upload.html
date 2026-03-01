@@ -31,7 +31,7 @@
     <section class="upload-hero glass-card">
       <p class="eyebrow">Dropzone + Your API</p>
       <h1>Upload files to <code>sht2.ben256.com</code> with a production-ready uploader.</h1>
-      <p>Configure endpoint and auth headers, then queue and upload with Dropzone progress + retry behavior.</p>
+      <p>Configure endpoint and headers, then queue and upload raw file bytes with Dropzone progress + retry behavior.</p>
     </section>
 
     <section class="upload-grid">
@@ -39,10 +39,7 @@
         <h2>Request settings</h2>
         <form id="settings-form" autocomplete="off">
           <label for="endpoint">Upload endpoint</label>
-          <input id="endpoint" name="endpoint" type="url" value="https://sht2.ben256.com/upload" required />
-
-          <label for="fieldName">Form field name</label>
-          <input id="fieldName" name="fieldName" type="text" value="file" required />
+          <input id="endpoint" name="endpoint" type="url" value="https://sht2.ben256.com/" required />
 
           <label for="authToken">Bearer token (optional)</label>
           <input id="authToken" name="authToken" type="text" placeholder="Paste token" />
@@ -67,7 +64,7 @@
 
       <article class="glass-card uploader-panel">
         <h2>Dropzone uploader</h2>
-        <form action="https://sht2.ben256.com/upload" class="dropzone" id="dropzoneForm">
+        <form action="https://sht2.ben256.com/" class="dropzone" id="dropzoneForm">
           <div class="dz-message">
             <strong>Drop files here</strong>
             <span>or click to browse</span>
@@ -97,7 +94,6 @@
     (function () {
       const settingsForm = document.getElementById('settings-form');
       const endpointEl = document.getElementById('endpoint');
-      const fieldNameEl = document.getElementById('fieldName');
       const authTokenEl = document.getElementById('authToken');
       const customHeaderNameEl = document.getElementById('customHeaderName');
       const customHeaderValueEl = document.getElementById('customHeaderValue');
@@ -108,7 +104,7 @@
       const responseOutput = document.getElementById('responseOutput');
       const copyResponseBtn = document.getElementById('copyResponse');
 
-      if (!window.Dropzone || !settingsForm || !endpointEl || !fieldNameEl || !authTokenEl || !customHeaderNameEl || !customHeaderValueEl || !withCredentialsEl || !uploadBtn || !clearBtn || !statusEl || !responseOutput || !copyResponseBtn) {
+      if (!window.Dropzone || !settingsForm || !endpointEl || !authTokenEl || !customHeaderNameEl || !customHeaderValueEl || !withCredentialsEl || !uploadBtn || !clearBtn || !statusEl || !responseOutput || !copyResponseBtn) {
         return;
       }
 
@@ -117,10 +113,19 @@
       let startedUploads = 0;
       let finishedUploads = 0;
 
+      function normalizeEndpoint(value) {
+        const raw = (value || '').trim();
+        if (!raw) return '';
+        return raw.replace(/\/upload\/?$/i, '/');
+      }
+
+      function isSht2Endpoint(endpoint) {
+        return /^https:\/\/sht2\.ben256\.com\/?$/i.test(endpoint);
+      }
+
       function saveSettings() {
         const payload = {
-          endpoint: endpointEl.value,
-          fieldName: fieldNameEl.value,
+          endpoint: normalizeEndpoint(endpointEl.value),
           authToken: authTokenEl.value,
           customHeaderName: customHeaderNameEl.value,
           customHeaderValue: customHeaderValueEl.value,
@@ -134,12 +139,16 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return;
           const parsed = JSON.parse(raw);
-          if (parsed.endpoint) endpointEl.value = parsed.endpoint;
-          if (parsed.fieldName) fieldNameEl.value = parsed.fieldName;
+          if (parsed.endpoint) endpointEl.value = normalizeEndpoint(parsed.endpoint);
           if (parsed.authToken) authTokenEl.value = parsed.authToken;
           if (parsed.customHeaderName) customHeaderNameEl.value = parsed.customHeaderName;
           if (parsed.customHeaderValue) customHeaderValueEl.value = parsed.customHeaderValue;
           withCredentialsEl.checked = Boolean(parsed.withCredentials);
+          if (isSht2Endpoint(endpointEl.value)) {
+            withCredentialsEl.checked = false;
+            customHeaderNameEl.value = '';
+            customHeaderValueEl.value = '';
+          }
         } catch (err) {
           console.warn('Could not restore settings.', err);
         }
@@ -200,9 +209,11 @@
       Dropzone.autoDiscover = false;
 
       const dz = new Dropzone('#dropzoneForm', {
-        url: endpointEl.value.trim() || 'https://sht2.ben256.com/upload',
+        url: function () {
+          return normalizeEndpoint(endpointEl.value) || 'https://sht2.ben256.com/';
+        },
         method: 'post',
-        paramName: fieldNameEl.value.trim() || 'file',
+        binaryBody: true,
         uploadMultiple: false,
         parallelUploads: 3,
         autoProcessQueue: false,
@@ -224,26 +235,30 @@
         updateStatus(dz);
       });
 
-      dz.on('sending', function (file, xhr, formData) {
-        const endpoint = endpointEl.value.trim();
-        const fieldName = fieldNameEl.value.trim() || 'file';
+      dz.on('sending', function (file, xhr) {
+        const endpoint = normalizeEndpoint(endpointEl.value) || 'https://sht2.ben256.com/';
         const authToken = authTokenEl.value.trim();
         const customHeaderName = customHeaderNameEl.value.trim();
         const customHeaderValue = customHeaderValueEl.value;
+        const disableCookiesForSht2 = isSht2Endpoint(endpoint);
+        const disableCustomHeadersForSht2 = isSht2Endpoint(endpoint);
 
-        dz.options.url = endpoint;
-        dz.options.paramName = fieldName;
-        dz.options.withCredentials = withCredentialsEl.checked;
+        dz.options.withCredentials = disableCookiesForSht2 ? false : withCredentialsEl.checked;
 
         if (authToken) {
           xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
         }
 
-        if (customHeaderName && customHeaderValue) {
+        if (!disableCustomHeadersForSht2 && customHeaderName && customHeaderValue) {
           xhr.setRequestHeader(customHeaderName, customHeaderValue);
         }
 
-        formData.append('originalName', file.name);
+        if (disableCookiesForSht2 && withCredentialsEl.checked) {
+          statusEl.textContent = 'Disabled cookies for sht2.ben256.com (server does not use credentialed CORS).';
+        }
+        if (disableCustomHeadersForSht2 && customHeaderName) {
+          statusEl.textContent = 'Ignored custom header for sht2.ben256.com (to avoid CORS preflight failure).';
+        }
       });
 
       dz.on('success', function (file, response, event) {
@@ -290,6 +305,14 @@
           statusEl.textContent = 'Upload endpoint is required.';
           endpointEl.focus();
           return;
+        }
+        endpointEl.value = normalizeEndpoint(endpoint);
+        if (isSht2Endpoint(endpointEl.value) && withCredentialsEl.checked) {
+          withCredentialsEl.checked = false;
+        }
+        if (isSht2Endpoint(endpointEl.value) && customHeaderNameEl.value.trim()) {
+          customHeaderNameEl.value = '';
+          customHeaderValueEl.value = '';
         }
 
         responses.length = 0;
